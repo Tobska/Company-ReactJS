@@ -1,0 +1,52 @@
+.container{
+  width: 100%;
+}
+
+.header{
+  flex-grow: 1;
+  padding-left: 10%;
+  padding-right: 10%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.listContainer {
+  padding-left: 10%;
+  padding-right: 10%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-content: space-around;
+}
+
+.item {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #ddd;
+}
+
+.item .details {
+  flex-grow: 10;
+
+}
+
+.item .btnGroup {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+.item:hover {
+  background-color: rgba(221, 221, 221, 0.219);
+}
