@@ -36,12 +36,31 @@
 }
 
 .item .details {
-  flex-grow: 10;
-
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
+.item .details .name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.item .details .address {
+  color: #aaa;
+  font-size: 12px;
+}
+
+
+.item .details .desc {
+  font-style: italic;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+
 .item .btnGroup {
-  flex-grow: 1;
+  width: 250px;
   display: flex;
   justify-content: space-around;
   flex-direction: row;

@@ -9,6 +9,9 @@
   border-radius: 10px;
   color: white;
   font-weight: bold;
+  outline: none;
+
+  transition: opacity 0.2s ease-in-out;
 }
 
 .btn.default {
@@ -22,6 +25,11 @@
 
 .btn.danger {
   background-color: rgb(226, 41, 41);
+}
+
+.btn:hover {
+  opacity: 0.5;
+  cursor: pointer;
 }
 
 .line {
