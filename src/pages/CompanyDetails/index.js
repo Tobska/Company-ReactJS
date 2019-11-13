@@ -42,9 +42,10 @@ export default function Index() {
       }
     `;
 
-  const { loading, data } = useQuery(COMPANY_DETAILS, {
-    variables: { id }
+  const { loading, data, refetch } = useQuery(COMPANY_DETAILS, {
+    variables: { id },
   })
+
   const [updateCompany] = useMutation(UPDATE_COMPANY)
 
   const [name, setName] = useState('')
@@ -63,6 +64,10 @@ export default function Index() {
     }
 
   }, [data])
+
+  useEffect(() => {
+    refetch()
+  }, [])
 
   const onTextChange = ({ target: { name, value } }) => {
     switch (name) {

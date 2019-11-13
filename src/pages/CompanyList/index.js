@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { gql } from "apollo-boost";
 import styles from './style.module.css'
 import {
@@ -17,7 +17,11 @@ export default function Index() {
 			}
 		}
 	`
-	const { loading, data } = useQuery(COMPANIES)
+	const { loading, data, refetch } = useQuery(COMPANIES)
+
+	useEffect(() => {
+		refetch()
+	}, [])
 
 	const mapCompanyData = companies => {
 		return companies.map(company => {
