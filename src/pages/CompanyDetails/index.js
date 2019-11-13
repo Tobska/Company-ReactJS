@@ -13,40 +13,58 @@ export default function Index() {
   const { id } = useParams();
 
   const COMPANY_DETAILS = gql`
-  query Company($id: ID!){
-    company(id: $id) {
-      name
-      address
-      description
+    query Company($id: ID!){
+      company(id: $id) {
+        name
+        address
+        description
+      }
     }
-  }
-  `
-  const UPDATE_COMPANY = gql`
-      mutation UpdateCompany($id: ID!, $name: String!, $address: String!, $description: String!) {
-        updateCompany(input: {
-          where: {
-            id: $id
-          },
-          data: {
-            name: $name,
-            address: $address,
-            description: $description,
-          }
-        }) {
-          company {
-            name
-            address
-            description
-          }
+    `
+  const CREATE_COMPANY = gql`
+    mutation CreateCompany($name: String!, $address: String!, $description: String!) {
+      createCompany(input: {
+        data: {
+          name: $name,
+          address: $address,
+          description: $description
+        }
+      }) {
+        company {
+          name
+          address
+          description
         }
       }
-    `;
+    }
+  `
+  const UPDATE_COMPANY = gql`
+    mutation UpdateCompany($id: ID!, $name: String!, $address: String!, $description: String!) {
+      updateCompany(input: {
+        where: {
+          id: $id
+        },
+        data: {
+          name: $name,
+          address: $address,
+          description: $description,
+        }
+      }) {
+        company {
+          name
+          address
+          description
+        }
+      }
+    }
+  `;
 
   const { loading, data, refetch } = useQuery(COMPANY_DETAILS, {
     variables: { id },
   })
 
   const [updateCompany] = useMutation(UPDATE_COMPANY)
+  const [createCompany] = useMutation(CREATE_COMPANY)
 
   const [name, setName] = useState('')
   const [address, setAddress] = useState('')
@@ -82,6 +100,14 @@ export default function Index() {
     }
   }
 
+  const submitForm = () => {
+    if (id === undefined) {
+      createCompany({ variables: { name, address, description: desc } })
+    } else {
+      updateCompany({ variables: { id, name, address, description: desc } })
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -91,7 +117,7 @@ export default function Index() {
         </div>
 
         <div>
-          <button className="btn primary" onClick={() => { updateCompany({ variables: { id, name, address, description: desc } }) }}>Submit</button>
+          <button className="btn primary" onClick={submitForm}>Submit</button>
         </div>
       </div>
 
