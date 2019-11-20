@@ -75,3 +75,18 @@ export const DELETE_COMPANY = gql`
     }
   }
   `
+
+export const EMPLOYEES = gql`
+  query EmployeesOfCompany($id: ID!){
+    company(id: $id) {
+      id
+      name
+      employees {
+        id
+        last_name
+        first_name
+        position
+      }
+    }
+  }
+  `

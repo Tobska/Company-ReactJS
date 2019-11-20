@@ -32,7 +32,7 @@ export default function Index() {
 			<hr className="line" />
 
 			<div className={styles.listContainer}>
-				{loading ? <div className={styles.messageText}>Loading please wait...</div> : null}
+				{loading ? <div className={styles.messageText}>Loading. Please wait...</div> : null}
 				{(loading || (data === undefined)) ? null : mapCompanyData(data.companies)}
 			</div>
 

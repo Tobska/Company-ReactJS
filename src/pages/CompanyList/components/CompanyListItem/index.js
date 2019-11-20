@@ -13,7 +13,7 @@ export default function index({ company }) {
         <div className={styles.desc}>{company.description}</div>
       </div>
       <div className={styles.btnGroup}>
-        <button className="btn primary">View Employees</button>
+        <Link to={`/employees/${company.id}`}><button className="btn primary">View Employees</button></Link>
         <Link to={`/company/${company.id}`}><button className="btn default">Modify</button></Link>
       </div>
     </div>
