@@ -62,6 +62,12 @@ export const UPDATE_COMPANY = gql`
 
 export const DELETE_COMPANY = gql`
   mutation DeleteCompany($id: ID!) {
+    deleteCompanyEmployees( id: $id ) 
+    { employees {
+        first_name
+        last_name
+      }
+    }
     deleteCompany (input: {
       where: {
         id: $id
