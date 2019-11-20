@@ -4,6 +4,7 @@ import CompanyList from './pages/CompanyList'
 import CompanyDetails from './pages/CompanyDetails'
 import EmployeeList from './pages/EmployeeList'
 import EmployeeDetails from './pages/EmployeeDetails'
+import NotFoundPage from './pages/404NotFound'
 import { ApolloProvider } from '@apollo/react-hooks'
 import client from './helpers/ApolloInstance'
 
@@ -43,6 +44,10 @@ function App() {
 
             <Route exact path="/employInfo/:id">
               <EmployeeDetails />
+            </Route>
+
+            <Route path="*">
+              <NotFoundPage />
             </Route>
 
           </Switch>

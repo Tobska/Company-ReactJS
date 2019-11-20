@@ -11,6 +11,7 @@ import styles from './style.module.css'
 import Popup from '../components/Popup'
 import PopupConfirm from '../components/PopupConfirm'
 import ErrorBox from './components/ErrorBox'
+import NotFound from '../404NotFound'
 
 export default function Index() {
 
@@ -47,7 +48,7 @@ export default function Index() {
 
   useEffect(() => {
 
-    if (id !== undefined && !loading) {
+    if (id !== undefined && !loading && data.company !== null) {
       const { company } = data
 
       setName(company.name)
@@ -142,6 +143,14 @@ export default function Index() {
     } else {
       return null
     }
+  }
+
+  if (loading) {
+    return null
+  }
+
+  if (id !== undefined && !loading && data.company === null) {
+    return <NotFound />
   }
 
   return (

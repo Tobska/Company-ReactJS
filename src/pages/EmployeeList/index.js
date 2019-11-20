@@ -8,6 +8,7 @@ import {
 import { useQuery } from '@apollo/react-hooks';
 
 import EmployeeListItem from './components/EmployeeListItem'
+import NotFoundPage from '../404NotFound'
 
 export default function Index() {
 
@@ -32,7 +33,7 @@ export default function Index() {
 	}
 
 	if (data.company === null) {
-		return <div className={styles.messageText}>Company Does Not Exist.</div>
+		return <NotFoundPage />
 	}
 
 	return (

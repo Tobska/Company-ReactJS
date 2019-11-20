@@ -1,0 +1,21 @@
+.notFoundContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  color: #aaa;
+  font-size: 32px;
+  font-weight: bold;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.notFoundContainer .link {
+  font-size: 18px;
+  margin-top: 20px;
+  text-decoration: underline;
+  cursor: pointer;
+  color: #37b1ff;
+}
