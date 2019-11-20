@@ -105,12 +105,13 @@ export const EMPLOYEE_DETAILS = gql`
   `
 
 export const CREATE_EMPLOYEE = gql`
-  mutation CreateEmployee($lastName: String!, $firstName: String!, $position: String!) {
+  mutation CreateEmployee($companyId: ID!, $lastName: String!, $firstName: String!, $position: String!) {
     createEmployee(input: {
       data: {
         last_name: $lastName,
         first_name: $firstName,
-        position: $position
+        position: $position,
+        company: $companyId
       }
     }) {
       employee {

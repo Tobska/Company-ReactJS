@@ -77,6 +77,7 @@ export default function Index() {
   const onDelete = (id) => {
     deleteCompany({ variables: { id }, refetchQueries: [{ query: COMPANIES }] }).then(res => {
       setPopupMsg('Successfully deleted company!')
+      setPopupSubMsg("Redirecting back to list...")
       setPopupVisible(true)
       setTimeout(goBackToList, 2000)
     })

@@ -71,12 +71,13 @@ export default function Index() {
   }
 
   const goBackToList = () => {
-    history.push(`/employees/${data.employee.company.id}`)
+    history.push(companyId === undefined ? `/employees/${data.employee.company.id}` : `/employees/${companyId}`)
   }
 
   const onDelete = (id) => {
-    deleteEmployee({ variables: { id }, refetchQueries: [{ query: EMPLOYEES }] }).then(res => {
-      setPopupMsg('Successfully deleted company!')
+    deleteEmployee({ variables: { id }, refetchQueries: [{ query: EMPLOYEES, variables: { id: data.employee.company.id } }] }).then(res => {
+      setPopupMsg('Successfully deleted employee!')
+      setPopupSubMsg("Redirecting back to list...")
       setPopupVisible(true)
       setTimeout(goBackToList, 2000)
     })
@@ -85,14 +86,14 @@ export default function Index() {
   const submitForm = () => {
     setPopupSubMsg("Redirecting back to list...")
     if (id === undefined) {
-      createEmployee({ variables: { lastName, firstName, position }, refetchQueries: [{ query: EMPLOYEES }] }).then(res => {
-        setPopupMsg('Successfully created company!')
+      createEmployee({ variables: { lastName, firstName, position, companyId }, refetchQueries: [{ query: EMPLOYEES, variables: { id: companyId } }] }).then(res => {
+        setPopupMsg('Successfully created employee!')
         setPopupVisible(true)
         setTimeout(goBackToList, 2000)
       })
     } else {
-      updateEmployee({ variables: { lastName, firstName, position }, refetchQueries: [{ query: EMPLOYEE_DETAILS, variables: { id } }, { query: EMPLOYEES }] }).then(res => {
-        setPopupMsg('Successfully updated company details!')
+      updateEmployee({ variables: { id, lastName, firstName, position }, refetchQueries: [{ query: EMPLOYEE_DETAILS, variables: { id } }, { query: EMPLOYEES, variables: { id: data.employee.company.id } }] }).then(res => {
+        setPopupMsg('Successfully updated employee details!')
         setPopupVisible(true)
         setTimeout(goBackToList, 2000)
       })
@@ -111,7 +112,7 @@ export default function Index() {
   }
 
   const displayDeleteConfirmPopup = () => {
-    setDeleteConfirmMsg("Are you sure you want to delete this company?")
+    setDeleteConfirmMsg("Are you sure you want to delete this employee?")
     setDeleteConfirmVisible(true)
   }
 
@@ -180,7 +181,7 @@ export default function Index() {
 
         <div>
           <button className="btn primary" onClick={() => {
-            displaySaveConfirmPopup(id !== undefined ? "Are you sure to overwrite the  existing data of this company?" : "Are you sure you want to create this company?")
+            displaySaveConfirmPopup(id !== undefined ? "Are you sure to overwrite the existing data of this employee?" : "Are you sure you want to create this employee?")
           }}>
             {id !== undefined ? <>Save Changes</> : <>Create Employee</>}
           </button>
