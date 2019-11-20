@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styles from './style.module.css'
 
 export default function Index({ message, subMessage, visible, confirmFunc, cancelFunc }) {

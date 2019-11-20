@@ -6,7 +6,7 @@ import styles from './style.module.css'
 
 export default function index({ company }) {
   return (
-    <div key={company.id + company.name} className={styles.item}>
+    <div className={styles.item}>
       <div className={styles.details}>
         <div className={styles.name}>{company.name}</div>
         <div className={styles.address}>{company.address}</div>

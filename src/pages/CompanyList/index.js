@@ -13,9 +13,13 @@ export default function Index() {
 	const { loading, data } = useQuery(COMPANIES)
 
 	const mapCompanyData = companies => {
-		return companies.map(company => {
-			return <CompanyListItem company={company} />
-		})
+		if (companies.length > 0) {
+			return companies.map(company => {
+				return <CompanyListItem key={company.id + company.name} company={company} />
+			})
+		} else {
+			return <div className={styles.messageText}>You have no companies.</div>
+		}
 	}
 
 	return (
@@ -28,6 +32,7 @@ export default function Index() {
 			<hr className="line" />
 
 			<div className={styles.listContainer}>
+				{loading ? <div className={styles.messageText}>Loading please wait...</div> : null}
 				{(loading || (data === undefined)) ? null : mapCompanyData(data.companies)}
 			</div>
 

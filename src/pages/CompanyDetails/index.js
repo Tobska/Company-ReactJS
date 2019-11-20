@@ -10,6 +10,7 @@ import styles from './style.module.css'
 
 import Popup from '../components/Popup'
 import PopupConfirm from '../components/PopupConfirm'
+import ErrorBox from './components/ErrorBox'
 
 export default function Index() {
 
@@ -29,13 +30,16 @@ export default function Index() {
   const [name, setName] = useState('')
   const [address, setAddress] = useState('')
   const [desc, setDesc] = useState('')
+  const [errors, setErrors] = useState([])
+
+  // STATES FOR POPUP
   const [popupMsg, setPopupMsg] = useState('')
+  const [popupSubMsg, setPopupSubMsg] = useState('')
   const [isPopupVisible, setPopupVisible] = useState(false)
 
-  // STATE FOR POPUP CONFIRM
+  // STATES FOR POPUP CONFIRM
   const [saveConfirmMsg, setSaveConfirmMsg] = useState('')
   const [isSaveConfirmVisible, setSaveConfirmVisible] = useState(false)
-
   const [deleteConfirmMsg, setDeleteConfirmMsg] = useState('')
   const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false)
 
@@ -79,6 +83,7 @@ export default function Index() {
   }
 
   const submitForm = () => {
+    setPopupSubMsg("Redirecting back to list...")
     if (id === undefined) {
       createCompany({ variables: { name, address, description: desc }, refetchQueries: [{ query: COMPANIES }] }).then(res => {
         setPopupMsg('Successfully created company!')
@@ -95,8 +100,14 @@ export default function Index() {
   }
 
   const displaySaveConfirmPopup = (message) => {
-    setSaveConfirmMsg(message)
-    setSaveConfirmVisible(true)
+    const errors = checkErrors()
+
+    setErrors(errors)
+
+    if (errors.length === 0) {
+      setSaveConfirmMsg(message)
+      setSaveConfirmVisible(true)
+    }
   }
 
   const displayDeleteConfirmPopup = () => {
@@ -104,9 +115,40 @@ export default function Index() {
     setDeleteConfirmVisible(true)
   }
 
+  const checkErrors = () => {
+    const errors = []
+
+    if (name === '') {
+      errors.push("Name can't be blank.")
+    }
+
+    if (address === '') {
+      errors.push("Address can't be blank.")
+    }
+
+    if (desc === '') {
+      errors.push("Description can't be blank.")
+    }
+
+    return errors
+  }
+
+  const mapErrors = () => {
+    if (errors.length > 0) {
+      return errors.map(error => {
+        return <ErrorBox key={error} errorString={error} />
+      })
+    } else {
+      return null
+    }
+  }
+
   return (
     <div className={styles.container}>
-      <Popup message={popupMsg} visible={isPopupVisible} subMessage={"Redirecting back to list..."} />
+      <Popup
+        message={popupMsg}
+        visible={isPopupVisible}
+        subMessage={popupSubMsg} />
 
       <PopupConfirm
         message={saveConfirmMsg}
@@ -144,6 +186,10 @@ export default function Index() {
       <hr className="line" />
 
       <div className={styles.formContainer}>
+        <div className={styles.errorContainer}>
+          {errors.length > 0 ? mapErrors() : null}
+        </div>
+        <div className={styles.errorBox}></div>
         <h3>Name</h3>
         <input onChange={onTextChange} className={styles.input} name="name" value={name} />
         <h3>Address</h3>
