@@ -3,6 +3,7 @@ import React from 'react';
 import CompanyList from './pages/CompanyList'
 import CompanyDetails from './pages/CompanyDetails'
 import EmployeeList from './pages/EmployeeList'
+import EmployeeDetails from './pages/EmployeeDetails'
 import { ApolloProvider } from '@apollo/react-hooks'
 import client from './helpers/ApolloInstance'
 
@@ -34,6 +35,14 @@ function App() {
 
             <Route exact path="/employees/:id">
               <EmployeeList />
+            </Route>
+
+            <Route exact path="/createEmployee/:companyId">
+              <EmployeeDetails />
+            </Route>
+
+            <Route exact path="/employInfo/:id">
+              <EmployeeDetails />
             </Route>
 
           </Switch>

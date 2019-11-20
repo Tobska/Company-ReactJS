@@ -90,3 +90,71 @@ export const EMPLOYEES = gql`
     }
   }
   `
+
+export const EMPLOYEE_DETAILS = gql`
+  query Employee($id: ID!){
+    employee(id: $id) {
+      last_name
+      first_name
+      position
+      company {
+        id
+      }
+    }
+  }
+  `
+
+export const CREATE_EMPLOYEE = gql`
+  mutation CreateEmployee($lastName: String!, $firstName: String!, $position: String!) {
+    createEmployee(input: {
+      data: {
+        last_name: $lastName,
+        first_name: $firstName,
+        position: $position
+      }
+    }) {
+      employee {
+        last_name
+        first_name
+        position
+      }
+    }
+  }
+  `
+
+export const UPDATE_EMPLOYEE = gql`
+  mutation UpdateEmployee($id: ID!, $lastName: String!, $firstName: String!, $position: String!) {
+    updateEmployee(input: {
+      where: {
+        id: $id
+      },
+      data: {
+        last_name: $lastName,
+        first_name: $firstName,
+        position: $position
+      }
+    }) {
+      employee {
+        last_name
+        first_name
+        position
+      }
+    }
+  }
+  `
+
+export const DELETE_EMPLOYEE = gql`
+  mutation DeleteEmployee($id: ID!) {
+    deleteEmployee (input: {
+      where: {
+        id: $id
+      }
+    }) {
+      employee {
+        last_name
+        first_name
+        position
+      }
+    }
+  }
+  `

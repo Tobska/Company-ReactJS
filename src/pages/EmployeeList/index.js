@@ -42,7 +42,7 @@ export default function Index() {
 					<Link to="/"><button className="btn default">Back</button></Link>
 					<h2>Employees of <i>{data.company.name}</i></h2>
 				</div>
-				<button className="btn primary">+ Create New Employee</button>
+				<Link to={`/createEmployee/${id}`}><button className="btn primary">+ Create New Employee</button></Link>
 			</div>
 
 			<hr className="line" />
