@@ -1,0 +1,25 @@
+.popupContainer {
+  position: absolute;
+  z-index: 11;
+  width: 100%;
+  height: 100%;
+
+  background-color: black;
+  opacity: 0.7;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.mainMessage {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.subMessage {
+  font-size: 18px;
+  margin-top: 10px;
+}

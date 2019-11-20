@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { gql } from "apollo-boost";
+import { COMPANIES } from '../../helpers/GraphQLConsts'
 import styles from './style.module.css'
 import {
 	Link
@@ -9,22 +9,8 @@ import { useQuery } from '@apollo/react-hooks';
 import CompanyListItem from './components/CompanyListItem'
 
 export default function Index() {
-	const COMPANIES = gql`
-		{
-			companies {
-				id
-				name
-				address
-				description
-			}
-		}
-	`
 
-	const { loading, data, refetch } = useQuery(COMPANIES)
-
-	useEffect(() => {
-		refetch()
-	}, [])
+	const { loading, data } = useQuery(COMPANIES)
 
 	const mapCompanyData = companies => {
 		return companies.map(company => {

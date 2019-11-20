@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import apollo from '../../helpers/ApolloInstance'
-import { gql } from "apollo-boost";
 import { useMutation, useQuery } from "@apollo/react-hooks"
+import { COMPANIES, COMPANY_DETAILS, CREATE_COMPANY, UPDATE_COMPANY, DELETE_COMPANY } from '../../helpers/GraphQLConsts'
 import { useHistory } from "react-router-dom";
 import {
   Link,
@@ -9,85 +8,38 @@ import {
 } from 'react-router-dom'
 import styles from './style.module.css'
 
+import Popup from '../components/Popup'
+import PopupConfirm from '../components/PopupConfirm'
+
 export default function Index() {
 
   const { id } = useParams();
 
-  const COMPANY_DETAILS = gql`
-    query Company($id: ID!){
-      company(id: $id) {
-        name
-        address
-        description
-      }
-    }
-    `
-  const CREATE_COMPANY = gql`
-    mutation CreateCompany($name: String!, $address: String!, $description: String!) {
-      createCompany(input: {
-        data: {
-          name: $name,
-          address: $address,
-          description: $description
-        }
-      }) {
-        company {
-          name
-          address
-          description
-        }
-      }
-    }
-  `
-  const UPDATE_COMPANY = gql`
-    mutation UpdateCompany($id: ID!, $name: String!, $address: String!, $description: String!) {
-      updateCompany(input: {
-        where: {
-          id: $id
-        },
-        data: {
-          name: $name,
-          address: $address,
-          description: $description,
-        }
-      }) {
-        company {
-          name
-          address
-          description
-        }
-      }
-    }
-  `;
-
-  const DELETE_COMPANY = gql`
-		mutation DeleteCompany($id: ID!) {
-			deleteCompany (input: {
-				where: {
-					id: $id
-				}
-			}) {
-				company {
-					name
-					address
-					description
-				}
-			}
-		}
-	`
-
-  const { loading, data, refetch } = useQuery(COMPANY_DETAILS, {
+  // GRAPHQL QUERY
+  const { loading, data } = useQuery(COMPANY_DETAILS, {
     variables: { id },
   })
 
+  // GRAPHQL MUTATIONS  
   const [updateCompany] = useMutation(UPDATE_COMPANY)
   const [createCompany] = useMutation(CREATE_COMPANY)
   const [deleteCompany] = useMutation(DELETE_COMPANY)
 
+  // STATES
   const [name, setName] = useState('')
   const [address, setAddress] = useState('')
   const [desc, setDesc] = useState('')
-  let history = useHistory()
+  const [popupMsg, setPopupMsg] = useState('')
+  const [isPopupVisible, setPopupVisible] = useState(false)
+
+  // STATE FOR POPUP CONFIRM
+  const [saveConfirmMsg, setSaveConfirmMsg] = useState('')
+  const [isSaveConfirmVisible, setSaveConfirmVisible] = useState(false)
+
+  const [deleteConfirmMsg, setDeleteConfirmMsg] = useState('')
+  const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false)
+
+  let history = useHistory() // used for redirecting
 
   useEffect(() => {
 
@@ -100,10 +52,6 @@ export default function Index() {
     }
 
   }, [data])
-
-  useEffect(() => {
-    refetch()
-  }, [])
 
   const onTextChange = ({ target: { name, value } }) => {
     switch (name) {
@@ -123,25 +71,61 @@ export default function Index() {
   }
 
   const onDelete = (id) => {
-    deleteCompany({ variables: { id } }).then(res => {
-      goBackToList()
+    deleteCompany({ variables: { id }, refetchQueries: [{ query: COMPANIES }] }).then(res => {
+      setPopupMsg('Successfully deleted company!')
+      setPopupVisible(true)
+      setTimeout(goBackToList, 2000)
     })
   }
 
   const submitForm = () => {
     if (id === undefined) {
-      createCompany({ variables: { name, address, description: desc } }).then(res => {
-        goBackToList()
+      createCompany({ variables: { name, address, description: desc }, refetchQueries: [{ query: COMPANIES }] }).then(res => {
+        setPopupMsg('Successfully created company!')
+        setPopupVisible(true)
+        setTimeout(goBackToList, 2000)
       })
     } else {
-      updateCompany({ variables: { id, name, address, description: desc } }).then(res => {
-        goBackToList()
+      updateCompany({ variables: { id, name, address, description: desc }, refetchQueries: [{ query: COMPANY_DETAILS, variables: { id } }, { query: COMPANIES }] }).then(res => {
+        setPopupMsg('Successfully updated company details!')
+        setPopupVisible(true)
+        setTimeout(goBackToList, 2000)
       })
     }
   }
 
+  const displaySaveConfirmPopup = (message) => {
+    setSaveConfirmMsg(message)
+    setSaveConfirmVisible(true)
+  }
+
+  const displayDeleteConfirmPopup = () => {
+    setDeleteConfirmMsg("Are you sure you want to delete this company?")
+    setDeleteConfirmVisible(true)
+  }
+
   return (
     <div className={styles.container}>
+      <Popup message={popupMsg} visible={isPopupVisible} subMessage={"Redirecting back to list..."} />
+
+      <PopupConfirm
+        message={saveConfirmMsg}
+        confirmFunc={() => {
+          setSaveConfirmVisible(false)
+          submitForm()
+        }}
+        cancelFunc={() => { setSaveConfirmVisible(false) }}
+        visible={isSaveConfirmVisible} />
+
+      <PopupConfirm
+        message={deleteConfirmMsg}
+        confirmFunc={() => {
+          setDeleteConfirmVisible(false)
+          onDelete(id)
+        }}
+        cancelFunc={() => { setDeleteConfirmVisible(false) }}
+        visible={isDeleteConfirmVisible} />
+
       <div className={styles.header}>
         <div className={styles.leftSide}>
           <Link to="/"><button className="btn default">Back</button></Link>
@@ -149,7 +133,11 @@ export default function Index() {
         </div>
 
         <div>
-          <button className="btn primary" onClick={submitForm}>Submit</button>
+          <button className="btn primary" onClick={() => {
+            displaySaveConfirmPopup(id !== undefined ? "Are you sure to overwrite the  existing data of this company?" : "Are you sure you want to create this company?")
+          }}>
+            {id !== undefined ? <>Save Changes</> : <>Create Company</>}
+          </button>
         </div>
       </div>
 
@@ -162,8 +150,10 @@ export default function Index() {
         <input onChange={onTextChange} className={styles.input} name="address" value={address} />
         <h3>Description</h3>
         <textarea onChange={onTextChange} rows="6" value={desc} name="desc" className={styles.textarea} />
-        {id !== undefined ? <button className={`${styles.deleteBtn} btn`} onClick={() => { onDelete(id) }}>Delete Company</button> : null}
+        {id !== undefined ? <button className={`${styles.deleteBtn} btn`} onClick={() => {
+          displayDeleteConfirmPopup()
+        }}>Delete Company</button> : null}
       </div>
-    </div>
+    </div >
   )
 }
