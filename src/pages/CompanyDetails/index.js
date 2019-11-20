@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import apollo from '../../helpers/ApolloInstance'
 import { gql } from "apollo-boost";
 import { useMutation, useQuery } from "@apollo/react-hooks"
+import { useHistory } from "react-router-dom";
 import {
   Link,
   useParams
@@ -59,17 +60,34 @@ export default function Index() {
     }
   `;
 
+  const DELETE_COMPANY = gql`
+		mutation DeleteCompany($id: ID!) {
+			deleteCompany (input: {
+				where: {
+					id: $id
+				}
+			}) {
+				company {
+					name
+					address
+					description
+				}
+			}
+		}
+	`
+
   const { loading, data, refetch } = useQuery(COMPANY_DETAILS, {
     variables: { id },
   })
 
   const [updateCompany] = useMutation(UPDATE_COMPANY)
   const [createCompany] = useMutation(CREATE_COMPANY)
+  const [deleteCompany] = useMutation(DELETE_COMPANY)
 
   const [name, setName] = useState('')
   const [address, setAddress] = useState('')
   const [desc, setDesc] = useState('')
-
+  let history = useHistory()
 
   useEffect(() => {
 
@@ -100,11 +118,25 @@ export default function Index() {
     }
   }
 
+  const goBackToList = () => {
+    history.push('/')
+  }
+
+  const onDelete = (id) => {
+    deleteCompany({ variables: { id } }).then(res => {
+      goBackToList()
+    })
+  }
+
   const submitForm = () => {
     if (id === undefined) {
-      createCompany({ variables: { name, address, description: desc } })
+      createCompany({ variables: { name, address, description: desc } }).then(res => {
+        goBackToList()
+      })
     } else {
-      updateCompany({ variables: { id, name, address, description: desc } })
+      updateCompany({ variables: { id, name, address, description: desc } }).then(res => {
+        goBackToList()
+      })
     }
   }
 
@@ -130,6 +162,7 @@ export default function Index() {
         <input onChange={onTextChange} className={styles.input} name="address" value={address} />
         <h3>Description</h3>
         <textarea onChange={onTextChange} rows="6" value={desc} name="desc" className={styles.textarea} />
+        {id !== undefined ? <button className={`${styles.deleteBtn} btn`} onClick={() => { onDelete(id) }}>Delete Company</button> : null}
       </div>
     </div>
   )

@@ -42,6 +42,14 @@
   border: 3px solid #37b1ff;
 }
 
+.formContainer .deleteBtn {
+  margin-top: 20px;
+  max-width: 420px;
+  background-color: white;
+  border: 3px solid red;
+  color: red;
+}
+
 .formContainer .textarea {
   max-width: 400px;
   padding: 10px;
